@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "466254101789",
+    "project_id": "shoezo",
+    "storage_bucket": "shoezo.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:466254101789:android:3c31b38559aeccca3ff5f4",
+        "android_client_info": {
+          "package_name": "com.example.shoezo"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDzIqCOJ9XD1tO2nSpfISEgRx8DIbHPvUE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
