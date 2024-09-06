@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shoezo/screens/home.dart';
 import 'package:shoezo/screens/navig.dart';
 import 'package:shoezo/screens/register.dart';
@@ -224,6 +225,7 @@ class _LoginPageState extends State<LoginPage> {
           builder: (context) => const Navig(),
         ),
       );
+
     } on FirebaseAuthException catch (e) {
       String errorMessage = '';
       if (e.code == 'user-not-found') {

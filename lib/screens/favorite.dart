@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class Favorite extends StatefulWidget {
@@ -24,7 +25,11 @@ class _FavoriteState extends State<Favorite> {
       body: Padding(
         padding: const EdgeInsets.only(left: 10),
         child: StreamBuilder<QuerySnapshot>(
-          stream: FirebaseFirestore.instance.collection('favorites').snapshots(),
+          stream: FirebaseFirestore.instance
+              .collection('users')
+              .doc(FirebaseAuth.instance.currentUser!.uid) // Query by the user's ID
+              .collection('favorites')
+              .snapshots(),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return Center(child: CircularProgressIndicator());
@@ -39,7 +44,7 @@ class _FavoriteState extends State<Favorite> {
             if (favoriteItems.isEmpty) {
               return Center(
                 child: Text(
-                  "Your favorite is empty",
+                  "Your favorites are empty",
                   style: TextStyle(
                       fontSize: screenWidth * 0.05, color: Colors.black54),
                 ),
@@ -49,8 +54,7 @@ class _FavoriteState extends State<Favorite> {
             return ListView.builder(
               itemCount: favoriteItems.length,
               itemBuilder: (context, index) {
-                final item =
-                favoriteItems[index].data() as Map<String, dynamic>;
+                final item = favoriteItems[index].data() as Map<String, dynamic>;
                 return Card(
                   elevation: 5,
                   margin: EdgeInsets.all(screenWidth * 0.02),
@@ -86,6 +90,8 @@ class _FavoriteState extends State<Favorite> {
                       icon: Icon(Icons.delete, color: Color(0xff9daf9b)),
                       onPressed: () async {
                         await FirebaseFirestore.instance
+                            .collection('users')
+                            .doc(FirebaseAuth.instance.currentUser!.uid)
                             .collection('favorites')
                             .doc(favoriteItems[index].id)
                             .delete();

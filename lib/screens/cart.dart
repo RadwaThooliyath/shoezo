@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -25,7 +26,11 @@ class _CartState extends State<Cart> {
       body: Padding(
         padding: const EdgeInsets.only(left: 10),
         child: StreamBuilder<QuerySnapshot>(
-          stream: FirebaseFirestore.instance.collection('cart').snapshots(),
+          stream: FirebaseFirestore.instance
+              .collection('users')
+              .doc(FirebaseAuth.instance.currentUser!.uid) // Query by the user's ID
+              .collection('cart')
+              .snapshots(),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return Center(child: CircularProgressIndicator());
@@ -89,16 +94,20 @@ class _CartState extends State<Cart> {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         IconButton(
-                          icon: Icon(Icons.remove_circle, color: Colors.red),
+                          icon: Icon(Icons.remove_circle, color: Color(0xff9daf9b)),
                           onPressed: () async {
                             final currentQuantity = item['quantity'] ?? 1;
                             if (currentQuantity > 1) {
                               await FirebaseFirestore.instance
+                                  .collection('users')
+                                  .doc(FirebaseAuth.instance.currentUser!.uid)
                                   .collection('cart')
                                   .doc(cartItems[index].id)
                                   .update({'quantity': currentQuantity - 1});
                             } else {
                               await FirebaseFirestore.instance
+                                  .collection('users')
+                                  .doc(FirebaseAuth.instance.currentUser!.uid)
                                   .collection('cart')
                                   .doc(cartItems[index].id)
                                   .delete();
@@ -106,22 +115,26 @@ class _CartState extends State<Cart> {
                           },
                         ),
                         IconButton(
-                          icon: Icon(Icons.add_circle, color: Colors.green),
-                          onPressed: () async {
-                            final currentQuantity = item['quantity'] ?? 1;
-                            await FirebaseFirestore.instance
-                                .collection('cart')
-                                .doc(cartItems[index].id)
-                                .update({'quantity': currentQuantity + 1});
-                          },
-                        ),
-                        IconButton(
                           icon: Icon(Icons.delete, color: Color(0xff9daf9b)),
                           onPressed: () async {
                             await FirebaseFirestore.instance
+                                .collection('users')
+                                .doc(FirebaseAuth.instance.currentUser!.uid)
                                 .collection('cart')
                                 .doc(cartItems[index].id)
                                 .delete();
+                          },
+                        ),
+                        IconButton(
+                          icon: Icon(Icons.add_circle, color: Color(0xff9daf9b)),
+                          onPressed: () async {
+                            final currentQuantity = item['quantity'] ?? 1;
+                            await FirebaseFirestore.instance
+                                .collection('users')
+                                .doc(FirebaseAuth.instance.currentUser!.uid)
+                                .collection('cart')
+                                .doc(cartItems[index].id)
+                                .update({'quantity': currentQuantity + 1});
                           },
                         ),
                       ],
@@ -131,7 +144,8 @@ class _CartState extends State<Cart> {
               },
             );
           },
-        ),
+        )
+
       ),
     );
   }
